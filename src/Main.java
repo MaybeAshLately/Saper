@@ -1,8 +1,26 @@
-//import Field.java
-
 public class Main {
+    static void field_test()
+    {
+      Field f;
+      f=new Field();
+      f.info();
+      f.addFlag();
+      f.info();
+      f.addMine();
+      f.info();
+      f.reveal();
+      f.info();
+      f.removeFlag();
+      f.info();
+      System.out.println(f.checkMine());
+      System.out.println(f.checkRevealed());
+      System.out.println(f.checkFlag());
+    }
+
+
     public static void main(String[] args) {
-        System.out.println("Hello world!");    }
+        //field_test();
+           }
 }
 
 /*
