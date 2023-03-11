@@ -67,6 +67,6 @@ public class Field {
         else iR=1;
         if(hasFlag==false) hF=0;
         else hF=1;
-        System.out.println("["+hM+iR+hF+"]");
+        System.out.print("["+hM+iR+hF+"]");
     }
 }

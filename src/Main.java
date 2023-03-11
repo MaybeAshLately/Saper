@@ -18,8 +18,22 @@ public class Main {
     }
 
 
+    static void board_test()
+    {
+        Board b;
+        b=new Board(4,4);
+        b.debug_display();
+        System.out.println(b.countMines(0,0));
+        System.out.println(b.countMines(2,2));
+        System.out.println();
+        b.display();
+
+    }
+
+
     public static void main(String[] args) {
         //field_test();
+       // board_test();
            }
 }
 
