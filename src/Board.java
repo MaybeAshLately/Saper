@@ -1,10 +1,16 @@
+/*
+Class Board represents board. It has a 2D table of fields (field class). It allows to read and modify state of fields
+ */
+
 import java.util.Random;
 
 public class Board {
     private Field fields[][];
     private int column;
     private int row;
+    private int numberOfMines;
 
+    //constructor creates board of size defined by user
     Board(int c,int r )
     {
         if((c<=0)||(r<=0)) java.lang.System.exit(-1);
@@ -14,7 +20,6 @@ public class Board {
         {
             for(int j=0;j<c;++j)
             {
-
                 fields[i][j]=new Field();
             }
         }
@@ -22,16 +27,18 @@ public class Board {
         column=c;
         row=r;
 
+        //generates number of mines- max is 1/2 of fields
         Random gen=new Random();
         int numOfMines=gen.nextInt(column*row/2)+1;
-        //generates number of mines- max is 1/2 of fields
+
         deployMines(numOfMines,false);
 
     }
 
+    //allocates mines- randomly or in predefined way
     private void deployMines(int n, boolean randrom)
     {
-        if(randrom==true)
+        if(randrom==true) //randomly
         {
             for(int i=0;i<n;++i)
             {
@@ -41,27 +48,29 @@ public class Board {
                 do {
                     c=gen.nextInt(column);
                     r=gen.nextInt(row);
-                }while(fields[r][c].checkMine()==true); //makes sure that field does already not has mine
+                }while(fields[r][c].checkMine()==true); //makes sure that there is not mine on the field
                 fields[r][c].addMine();
-
             }
-        }else
+            numberOfMines=n;
+        }else //predefined way (first row and diagonal)
         {
             for(int i=0;i<column;++i)
             {
-
                 fields[0][i].addMine();
-                if(i<row)
+                numberOfMines++;
+                if(i<row) //makes sure that diagonal field exist
                 {
                     fields[i][i].addMine();
+                    numberOfMines++;
                 }
-
             }
+            numberOfMines--; //because mine at 0,0 was counted twice
+
         }
 
     }
 
-
+    //display board with all the info (mine/reveal/flag)- test
     void debug_display()
     {
         for(int i=0;i<row;++i) {
@@ -72,6 +81,9 @@ public class Board {
         }
     }
 
+    //FUNCTIONS TO CHECK OR MODIFY FIELDS
+
+    //Returns true if field has mine, false if it doesn't or if it doesn't exist
     boolean hasMine(int y,int x)
     {
         if((x<0)||(y<0)) return false;
@@ -79,6 +91,7 @@ public class Board {
         return fields[y][x].checkMine();
     }
 
+    //Returns true if field has flag, false if it doesn't or if it doesn't exist
     boolean hasFlag(int y,int x)
     {
         if((x<0)||(y<0)) return false;
@@ -86,6 +99,7 @@ public class Board {
         return fields[y][x].checkFlag();
     }
 
+    //Returns true if field is revealed, false if it doesn't or if it doesn't exist
     boolean isRevealed(int y,int x)
     {
         if((x<0)||(y<0)) return false;
@@ -93,6 +107,7 @@ public class Board {
         return fields[y][x].checkRevealed();
     }
 
+    //toggles flag if field does exist
     void toggleFlag(int y,int x)
     {
         if((x<0)||(y<0)) return ;
@@ -102,6 +117,7 @@ public class Board {
 
     }
 
+    //reveals if field does exist
     void reveal(int y,int x)
     {
         if((x<0)||(y<0)) return ;
@@ -109,6 +125,8 @@ public class Board {
         fields[y][x].reveal();
     }
 
+
+    //count mines in 8 neighbour fields
     int countMines(int y,int x)
     {
         int mines=0;
@@ -125,7 +143,7 @@ public class Board {
     }
 
 
-
+   //Display board in game mode [.][ ][1][x][?]
     void display()
     {
         /* //Tests
@@ -136,8 +154,6 @@ public class Board {
       */
         for(int i=0;i<row;++i) {
             for (int j = 0; j < column; ++j) {
-
-
 
                   if(fields[i][j].checkRevealed()==false)
                   {
@@ -159,34 +175,30 @@ public class Board {
         }
     }
 
+    //Returns true if field does exist
     boolean doesExist(int c,int r)
     {
         if((c<0)||(r<0)) return false;
         if((c>column)||(r>row)) return false;
         return true;
     }
+
+    //checks if user have won
+    boolean checkWin()
+    {
+        int numOfFields=column*row;
+        //numberOfMines
+        int numOfReveal=0;
+
+        for(int i=0;i<row;++i) {
+            for (int j = 0; j < column; ++j)
+            {
+                if((fields[i][j].checkRevealed()==true)&&(fields[i][j].checkMine()==false)) numOfReveal++;
+            }
+        }
+
+        if((numOfFields-numberOfMines)==numOfReveal) return true;
+        return false;
+    }
 }
 
-/*
-2. Klasa reprezentująca całą planszę
-
-Plansza jest prostokątnym obszarem o wymiarach M*N. Każdy "element" tego obszaru to zdefiniowane wcześniej "pole".
-
-W klasie reprezentującej planszę należy stworzyć następujące funkcje
-
-    konstruktor określający rozmiar planszy
-    funkcja deployMines(int n, bool randrom) - ustawia na planszy n min
-        w losowych pozycjach jeśli parametr random ma wartość true
-        w pierwszym wierszu i na przekątnej jeśli parametr random ma wartość false (w tym przypadku wartość n jest ignorowana)
-    debug_display() - pomocnicza funkcja wyświetlająca całą planszę (wywołuje funkcję info() dla każdego pola planszy)
-    hasMine(int x, int y) - zwraca prawdę, jeśli na polu jest mina. Zwraca fałsz jeśli na polu nie ma miny albo jeśli podane współrzędne leżą poza planszą
-    countMines(intx, int y) - funkcja liczy ile jest min w otoczeniu pola o współrzędnych x,y (wskazówka - użyj zdefiniowanej wcześniej funkcji hasMine() )
-    display() - wyświetla planszę zgodnie z regułami gry, czyli
-        [.] - jeśli pole jest zakryte i nie jest oznaczone flagą
-        [?] - jeśli pole jest zakryte i jest oznaczone flagą
-        [ ] - jeśli pole jest odkryte, nie ma na nim miny i w sąsiedztwie jest 0 min
-        [3] - j.w., ale w otoczeniu pola są 3 miny
-        [x] - na odkrytym polu jest mina (koniec gry !)
-    reveal(x,y) - odkryj pole; jeśli na odkrytym polu jest mina, to w klasie plansza ustawiany jest znacznik sygnalizujący koniec gry
-
- */

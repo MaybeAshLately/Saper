@@ -57,7 +57,7 @@ public class Field {
     }
 
 
-    //returns info about all three parameters
+    //returns info about all three parameters "[MRF]"
     void info()
     {
         int hM,iR,hF;
