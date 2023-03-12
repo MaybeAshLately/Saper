@@ -31,9 +31,13 @@ public class Main {
     }
 
 
+
     public static void main(String[] args) {
         //field_test();
        // board_test();
+     Game g;
+     g=new Game();
+     g.start();
            }
 }
 

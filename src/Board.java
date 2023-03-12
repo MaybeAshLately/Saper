@@ -79,6 +79,36 @@ public class Board {
         return fields[y][x].checkMine();
     }
 
+    boolean hasFlag(int y,int x)
+    {
+        if((x<0)||(y<0)) return false;
+        if((x>=column)||(y>=row)) return false;
+        return fields[y][x].checkFlag();
+    }
+
+    boolean isRevealed(int y,int x)
+    {
+        if((x<0)||(y<0)) return false;
+        if((x>=column)||(y>=row)) return false;
+        return fields[y][x].checkRevealed();
+    }
+
+    void toggleFlag(int y,int x)
+    {
+        if((x<0)||(y<0)) return ;
+        if((x>=column)||(y>=row)) return;
+        if(fields[y][x].checkFlag()==true) fields[y][x].removeFlag();
+        else fields[y][x].addFlag();
+
+    }
+
+    void reveal(int y,int x)
+    {
+        if((x<0)||(y<0)) return ;
+        if((x>=column)||(y>=row)) return;
+        fields[y][x].reveal();
+    }
+
     int countMines(int y,int x)
     {
         int mines=0;
@@ -93,6 +123,7 @@ public class Board {
         if(hasMine(y+1,x+1)==true) mines++;
         return mines;
     }
+
 
 
     void display()
@@ -126,6 +157,13 @@ public class Board {
             }
             System.out.println();
         }
+    }
+
+    boolean doesExist(int c,int r)
+    {
+        if((c<0)||(r<0)) return false;
+        if((c>column)||(r>row)) return false;
+        return true;
     }
 }
 
